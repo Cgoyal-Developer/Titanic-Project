@@ -1,23 +1,31 @@
-# Use a Python 3.10 slim base image
+FROM python:3.10-slim AS build_image
+
+# Install system dependencies for building Python packages
+RUN apt-get update && apt-get install -y \
+    git \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Clone the Titanic-Project repository
+RUN git clone https://github.com/Cgoyal-Developer/Titanic-Project.git /Titanic-Project
+
+# Set working directory to the Titanic-Project directory
+WORKDIR /Titanic-Project
+
+# Use a new base image for running the app
 FROM python:3.10-slim
 
-# Set the working directory inside the container
+# Set the working directory to /app inside the container
 WORKDIR /app
 
-# Copy only the requirements.txt first to leverage Docker cache
-COPY requirements.txt /app/
+# Copy the project files and the installed libraries from the build image to the final image
+COPY --from=build_image /Titanic-Project /app
 
-# Install the required libraries from requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy the rest of the application code (including app.py) into the container
-COPY . /app/
+# Install the Python dependencies again in the final image (important to ensure everything is installed)
+RUN pip install --no-cache-dir -r /app/requirements.txt
 
 # Expose the port for Streamlit (default is 8501)
 EXPOSE 8501
 
-# Expose the port for Jupyter Notebook (default is 8888)
-EXPOSE 8888
-
-# Command to run Streamlit app (ensure app.py is in the current directory)
+# Ensure app.py exists and is in the correct directory before starting Streamlit
 CMD ["streamlit", "run", "app.py"]
