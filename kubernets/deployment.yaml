@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spaceship-app
+  labels:
+    app: spaceship-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: spaceship-app
+  template:
+    metadata:
+      labels:
+        app: spaceship-app
+    spec:
+      containers:
+        - name: spaceship-app
+          image: cgoyaldeveloper/spaceship-app:latest
+          ports:
+            - containerPort: 8501
+          env:
+            - name: ENV
+              value: "production"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spaceship-app-service
+spec:
+  selector:
+    app: spaceship-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8501
+  type: LoadBalancer
