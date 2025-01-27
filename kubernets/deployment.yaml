@@ -16,9 +16,9 @@ spec:
     spec:
       containers:
         - name: spaceship-app
-          image: cgoyaldeveloper/spaceship-app:latest
+          image: cgoyaldeveloper/spaceship-app:latest  # Replace with your Docker Hub image
           ports:
-            - containerPort: 8501
+            - containerPort: 8501  # The port your app runs on inside the container
           env:
             - name: ENV
               value: "production"
@@ -32,6 +32,7 @@ spec:
     app: spaceship-app
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 8501
-  type: LoadBalancer
+      port: 8501         # Service port
+      targetPort: 8501   # Container port
+      nodePort: 30001    # NodePort (you can let Kubernetes auto-assign by omitting this)
+  type: NodePort
