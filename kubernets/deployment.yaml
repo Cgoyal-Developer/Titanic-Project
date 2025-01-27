@@ -1,4 +1,4 @@
-apiVersion: apps/v1
+hubapiVersion: apps/v1
 kind: Deployment
 metadata:
   name: spaceship-app
@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: spaceship-app
-          image: cgoyaldeveloper/spaceship-app:latest  # Replace with your Docker Hub image
+          image: cgoyaldeveloper/titanic-spaceship:latest  # Replace with your Docker Hub image
           ports:
             - containerPort: 8501  # The port your app runs on inside the container
           env:
